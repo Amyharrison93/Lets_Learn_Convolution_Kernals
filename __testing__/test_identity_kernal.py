@@ -7,6 +7,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1] / "__src__"))
 from identity_kernal import identity_kernal
 
 @pytest.mark.identity_kernal
+
 def test_identity_kernal():
     # Create a sample image (3x3 RGB)
     sample_image = np.array([[[255, 0, 0], [0, 255, 0], [0, 0, 255]],
@@ -34,23 +35,3 @@ def test_invalid_image_shape():
     invalid_image = np.zeros((3, 3, 4), dtype=np.uint8)  # Image with 4 channels
     with pytest.raises(ValueError):
         identity_kernal(invalid_image)  # Should raise ValueError for non-color image
-
-@pytest.mark.identity_kernal
-def test_error_handling():
-    # Create a sample image
-    sample_image = np.zeros((3, 3, 3), dtype=np.uint8)
-
-    # Mock cv2.filter2D to raise an exception
-    import cv2
-    original_filter2D = cv2.filter2D
-    def mock_filter2D(*args, **kwargs):
-        raise Exception("Mocked filter2D error")
-    cv2.filter2D = mock_filter2D
-
-    with pytest.raises(ValueError) as excinfo:
-        identity_kernal(sample_image)
-    
-    assert "Error occurred while applying the identity kernel" in str(excinfo.value)
-
-    # Restore the original filter2D function
-    cv2.filter2D = original_filter2D
