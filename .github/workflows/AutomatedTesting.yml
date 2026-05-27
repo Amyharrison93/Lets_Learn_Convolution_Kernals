@@ -35,4 +35,9 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run tests
-        run: pytest -q if __tests__/; then pytest -q __tests__/; else echo "No tests found in __tests__/ directory."; fi
+        run: |
+          if [ -d __testing__ ]; then
+            pytest -q __testing__/
+          else
+            echo "No tests found in __testing__/ directory."
+          fi
