@@ -6,8 +6,6 @@ import numpy as np
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from __src__.identity_kernal import convolution_kernals
 
-@pytest.mark.identity_kernal
-
 def test_identity_kernal():
     # Create a sample image (3x3 RGB)
     sample_image = np.array([[[255, 0, 0], [0, 255, 0], [0, 0, 255]],
@@ -15,23 +13,27 @@ def test_identity_kernal():
                               [[128, 128, 128], [64, 64, 64], [32, 32, 32]]], dtype=np.uint8)
 
     # Apply the identity kernel
-    output_image = convolution_kernals(sample_image)
+    conv_kernals = convolution_kernals()
+    kernal = conv_kernals.generate_identity_kernel(kernel_size=3)
+    output_image = conv_kernals.apply_kernel(sample_image, kernal)
 
     # Assert that the output image is the same as the input image
     assert np.array_equal(sample_image, output_image), "The output image should be the same as the input image when using the identity kernel."
 
-@pytest.mark.identity_kernal
 def test_invalid_kernel_size():
     sample_image = np.zeros((3, 3, 3), dtype=np.uint8)
+    conv_kernal = convolution_kernals()
     with pytest.raises(ValueError):
-        convolution_kernals(sample_image, kernel_size=4)  # Even kernel size should raise ValueError
+        conv_kernal.generate_identity_kernel(kernel_size=4)  # Even kernel size should raise ValueError
 
-@pytest.mark.identity_kernal
 def test_invalid_image_shape():
     invalid_image = np.zeros((3, 3), dtype=np.uint8)  # Grayscale image (2D)
+    conv_kernal = convolution_kernals()
     with pytest.raises(ValueError):
-        convolution_kernals(invalid_image)  # Should raise ValueError for non-color image
+        kernal = conv_kernal.generate_identity_kernel(kernel_size=3)
+        conv_kernal.apply_kernel(invalid_image, kernal)  # Should raise ValueError for non-color image
 
     invalid_image = np.zeros((3, 3, 4), dtype=np.uint8)  # Image with 4 channels
     with pytest.raises(ValueError):
-        convolution_kernals(invalid_image)  # Should raise ValueError for non-color image
+        kernal = conv_kernal.generate_identity_kernel(kernel_size=3)
+        conv_kernal.apply_kernel(invalid_image, kernal)  # Should raise ValueError for non-color image
