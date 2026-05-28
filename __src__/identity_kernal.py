@@ -1,6 +1,5 @@
 import asyncio
 import tracemalloc
-from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Pool
 
 import cv2
