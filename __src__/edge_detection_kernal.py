@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import time
 
 from identity_kernal import convolution_kernals
 
@@ -108,6 +107,30 @@ class edge_detection_kernal(convolution_kernals):
         #average_pixel_value = np.mean(image, axis=2)  # Average across color channels to get a single channel for edge detection
 
         return self.apply_kernel(image, kernel)
+    
+    def sobel_edge_detection_kernal(self, image: np.ndarray) -> np.ndarray:
+        """
+        Apply a Sobel edge detection kernel to the input image. The Sobel edge detection kernel is a combination of vertical and horizontal edge detection kernels that highlights edges in both directions when applied.
+        warning: this is very slow and just an example of how to implement a convolution kernel from scratch. For practical use, consider using OpenCV's built-in Sobel function for optimized performance.
+        Parameters:
+        image (numpy.ndarray): The input image to which the Sobel edge detection kernel will be applied.
+        Returns:
+        numpy.ndarray: The output image after applying the Sobel edge detection kernel, which highlights edges in both vertical and horizontal directions in the input image.
+        """
+        if len(image.shape) != 3 or image.shape[2] != 3:
+            raise ValueError("Input image must be a color image (3 channels).")
+        
+        vertical_kernel = self.generate_vertical_edge_detection_kernel()
+        horizontal_kernel = self.generate_horizontal_edge_detection_kernel()
+
+        vertical_edges = self.apply_kernel(image, vertical_kernel)
+        horizontal_edges = self.apply_kernel(image, horizontal_kernel)
+
+        # Combine vertical and horizontal edges to get the final edge map
+        sobel_edges = np.sqrt(np.square(vertical_edges) + np.square(horizontal_edges))
+        sobel_edges = np.clip(sobel_edges, 0, 255).astype(np.uint8)
+
+        return sobel_edges
 
     async def channelwise_convolution_kernal(self, channel: np.ndarray, kernel: np.ndarray) -> np.ndarray:
         """

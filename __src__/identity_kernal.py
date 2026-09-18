@@ -1,4 +1,3 @@
-import asyncio
 import tracemalloc
 from multiprocessing import Pool
 
